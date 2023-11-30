@@ -2,7 +2,7 @@
 
 Para utilizar la aplicación se deben seguir los siguientes pasos:
 
-1. Clonar este repositorio su computadora.
+1. Clonar este repositorio en su computadora.
 2. Abrir una terminal dentro de la carpeta descargada (puede ser CMD, Git Bash o cualquier otra).
 3. Ejecutar el comando ./mvnw spring-boot:run. Luego de que aparezca un mensaje del estilo "Started Application in 4.685 seconds" la aplicación está lista para usarse.
 
