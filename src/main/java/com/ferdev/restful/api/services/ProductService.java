@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    List<Product> getProducts(String order);
+    List<Product> getProducts(String sort, String order);
 
     Product getProductById(int id);
 

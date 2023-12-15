@@ -19,10 +19,21 @@ public class ProductExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<ProductErrorResponse> invalidData(InvalidProductException exc) {
+        ProductErrorResponse error = new ProductErrorResponse();
+
+        error.setMessage(exc.getMessage());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ProductErrorResponse> generalError(RuntimeException exc) {
         ProductErrorResponse error = new ProductErrorResponse();
 
-        error.setMessage("Bad Request");
+        error.setMessage("Unexpected failure occurred: " + exc.getMessage());
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setTimeStamp(System.currentTimeMillis());
 
