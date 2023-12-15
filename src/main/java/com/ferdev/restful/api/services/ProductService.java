@@ -6,15 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    List<Product> getProducts();
+    List<Product> getProducts(String order);
 
-    List<Product> getProductsOrderedByPrice();
-
-    Optional<Product> getProductById(int id);
+    Product getProductById(int id);
 
     Product createProduct(Product product);
 
-    void updateProduct(Product product);
+    Product updateProduct(Product product, int id);
 
-    void deleteProduct(int id);
+    Product deleteProduct(int id);
 }

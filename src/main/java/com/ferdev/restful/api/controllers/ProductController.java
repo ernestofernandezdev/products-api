@@ -23,27 +23,20 @@ public class ProductController {
 
     @GetMapping("")
     public ResponseEntity<List<Product>> getProducts(@RequestParam(name = "order", required = false) String order) {
-        List<Product> products;
-        if (order != null && order.equals("price")) {
-            products = this.productService.getProductsOrderedByPrice();
-        } else {
-            products = this.productService.getProducts();
-        }
+        List<Product> products = this.productService.getProducts(order);
+
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable int productId) {
-        if (this.productService.getProductById(productId).isPresent()) {
-            return new ResponseEntity<>(this.productService.getProductById(productId).get(), HttpStatus.OK);
-        } else {
-            throw new ProductNotFoundException("There is no product with id " + productId);
-        }
+        Product product = this.productService.getProductById(productId);
+
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @PostMapping("")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        product.setId(0);
         Product savedProduct = this.productService.createProduct(product);
 
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
@@ -51,25 +44,15 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product, @PathVariable int productId) {
-        if (this.productService.getProductById(productId).isPresent()) {
-            product.setId(productId);
-            this.productService.updateProduct(product);
+        Product updatedProduct = this.productService.updateProduct(product, productId);
 
-            return new ResponseEntity<>(product, HttpStatus.OK);
-        } else {
-            throw new ProductNotFoundException("There is no product with id " + productId);
-        }
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Product> deleteProduct(@PathVariable int productId) {
-        Optional<Product> optProduct = this.productService.getProductById(productId);
-        if (optProduct.isPresent()) {
-            this.productService.deleteProduct(productId);
+        Product deletedProduct = this.productService.deleteProduct(productId);
 
-            return new ResponseEntity<>(optProduct.get(), HttpStatus.OK);
-        } else {
-            throw new ProductNotFoundException("There is no product with id " + productId);
-        }
+        return new ResponseEntity<>(deletedProduct, HttpStatus.OK);
     }
 }
