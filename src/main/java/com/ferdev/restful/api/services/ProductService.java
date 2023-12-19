@@ -15,4 +15,6 @@ public interface ProductService {
     Product updateProduct(Product product, int id);
 
     Product deleteProduct(int id);
+
+    void validateProduct(Product product);
 }

@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private void validateProduct(Product product) {
+    public void validateProduct(Product product) {
         String name = product.getName();
         Integer price = product.getPrice();
         Integer amount = product.getAmount();
