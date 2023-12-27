@@ -1,6 +1,10 @@
 package com.ferdev.restful.api.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import org.hibernate.validator.constraints.Range;
 
 @Entity
 @Table(name = "products")
@@ -10,12 +14,17 @@ public class Product {
     @Column(name = "id")
     private Integer id;
     @Column(name = "name")
+    @NotBlank
     private String name;
     @Column(name = "description")
     private String description;
     @Column(name = "price")
+    @NotNull
+    @Positive
     private Integer price;
     @Column(name = "amount")
+    @NotNull
+    @Positive
     private Integer amount;
 
     public Product() {

@@ -19,7 +19,7 @@ public class IntegrationTest {
 
     @ParameterizedTest(name = "sort={0}, order={1}")
     @CsvFileSource(resources = "/testFiles/sortAndOrder.csv")
-    void integrationTEST(String sort, String order) throws Exception {
+    void getTEST(String sort, String order) throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products?sort=" + sort + "&order=" + order))
                 .andExpect(status().isOk())
                 .andReturn();

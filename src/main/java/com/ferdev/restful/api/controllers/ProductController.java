@@ -3,6 +3,7 @@ package com.ferdev.restful.api.controllers;
 import com.ferdev.restful.api.entities.Product;
 import com.ferdev.restful.api.exceptions.ProductNotFoundException;
 import com.ferdev.restful.api.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,14 +38,14 @@ public class ProductController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
         Product savedProduct = this.productService.createProduct(product);
 
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Product> updateProduct(@RequestBody Product product, @PathVariable int productId) {
+    public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product, @PathVariable int productId) {
         Product updatedProduct = this.productService.updateProduct(product, productId);
 
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);

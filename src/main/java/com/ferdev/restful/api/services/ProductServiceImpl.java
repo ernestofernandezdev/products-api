@@ -51,15 +51,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(Product product) {
-        this.validateProduct(product);
 
         product.setId(0);
         return this.productRepository.save(product);
+
     }
 
     @Override
     public Product updateProduct(Product product, int id) {
-        this.validateProduct(product);
 
         if (this.productRepository.findById(id).isPresent()) {
             product.setId(id);
@@ -69,24 +68,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             throw new ProductNotFoundException("There is no product with id " + id);
         }
-    }
 
-    public void validateProduct(Product product) {
-        String name = product.getName();
-        Integer price = product.getPrice();
-        Integer amount = product.getAmount();
-
-        if (name == null || name.isEmpty()) {
-            throw new InvalidProductException("Must provide a valid name");
-        }
-
-        if (price == null || price <= 0) {
-            throw new InvalidProductException("Price must be positive");
-        }
-
-        if (amount == null || amount <= 0) {
-            throw new InvalidProductException("Amount must be positive");
-        }
     }
 
     @Override
