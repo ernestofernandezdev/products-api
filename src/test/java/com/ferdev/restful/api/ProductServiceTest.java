@@ -3,23 +3,23 @@ package com.ferdev.restful.api;
 import com.ferdev.restful.api.entities.Product;
 import com.ferdev.restful.api.exceptions.ProductNotFoundException;
 import com.ferdev.restful.api.repositories.ProductRepository;
-import com.ferdev.restful.api.services.ProductService;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.ferdev.restful.api.services.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;

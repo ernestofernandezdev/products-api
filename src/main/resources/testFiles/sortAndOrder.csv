@@ -1,5 +1,8 @@
-namee,asc
-namee,desc
+name,asc
+name,desc
+price,asc
+price,desc
+amount,asc
+amount,desc
 noSort,noOrder
 namee,noOrder
-name,asc
