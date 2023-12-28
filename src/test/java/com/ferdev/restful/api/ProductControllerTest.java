@@ -1,5 +1,6 @@
 package com.ferdev.restful.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ferdev.restful.api.controllers.ProductController;
 import com.ferdev.restful.api.services.ProductService;
 import com.ferdev.restful.api.entities.Product;
@@ -11,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -87,8 +89,101 @@ class ProductControllerTest {
 				.andExpect(jsonPath("$.name", is(this.product.getName())));
 	}
 
-	@Test
-	void createProductTEST() {
+	@ParameterizedTest(name = "name={0}, price={1}, amount={2}")
+	@CsvFileSource(resources = "/testFiles/sampleProducts.csv")
+	void createProductTEST(String name, Integer price, Integer amount) throws Exception {
+		Product testProduct = Product.builder()
+				.name(name)
+				.price(price)
+				.amount(amount)
+				.build();
 
+		when(this.productService.createProduct(Mockito.any(Product.class))).thenReturn(testProduct);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		String jsonObject = objectMapper.writeValueAsString(testProduct);
+
+		this.mockMvc.perform(post("/api/products")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonObject)
+				)
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.name", is(name)));
+	}
+
+	@ParameterizedTest(name = "name={0}, price={1}, amount={2}")
+	@CsvFileSource(resources = "/testFiles/badSampleProducts.csv")
+	void createProductFailTEST(String name, Integer price, Integer amount) throws Exception {
+		Product testProduct = Product.builder()
+				.name(name)
+				.price(price)
+				.amount(amount)
+				.build();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		String jsonObject = objectMapper.writeValueAsString(testProduct);
+
+		this.mockMvc.perform(post("/api/products")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonObject)
+				)
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message", containsString("MethodArgumentNotValidException")));
+	}
+
+	@ParameterizedTest(name = "name={0}, price={1}, amount={2}")
+	@CsvFileSource(resources = "/testFiles/sampleProducts.csv")
+	void updateProductTEST(String name, Integer price, Integer amount) throws Exception {
+		Product testProduct = Product.builder()
+				.name(name)
+				.price(price)
+				.amount(amount)
+				.build();
+
+		when(this.productService.updateProduct(Mockito.any(Product.class), Mockito.anyInt())).thenReturn(testProduct);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		String jsonObject = objectMapper.writeValueAsString(testProduct);
+
+		this.mockMvc.perform(put("/api/products/1")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonObject)
+				)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.name", is(name)));
+	}
+
+	@ParameterizedTest(name = "name={0}, price={1}, amount={2}")
+	@CsvFileSource(resources = "/testFiles/badSampleProducts.csv")
+	void updateProductFailTEST(String name, Integer price, Integer amount) throws Exception {
+		Product testProduct = Product.builder()
+				.name(name)
+				.price(price)
+				.amount(amount)
+				.build();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		String jsonObject = objectMapper.writeValueAsString(testProduct);
+
+		this.mockMvc.perform(put("/api/products/1")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonObject)
+				)
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message", containsString("MethodArgumentNotValidException")));
+	}
+
+	@Test
+	void deleteProductTEST() throws Exception {
+
+		when(this.productService.deleteProduct(Mockito.anyInt())).thenReturn(this.product);
+
+		this.mockMvc.perform(delete("/api/products/1"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.name", is(this.product.getName())));
 	}
 }

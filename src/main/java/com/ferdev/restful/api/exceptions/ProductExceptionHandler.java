@@ -3,6 +3,7 @@ package com.ferdev.restful.api.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -12,7 +13,7 @@ public class ProductExceptionHandler {
     public ResponseEntity<ProductErrorResponse> notFoundError(ProductNotFoundException exc) {
         ProductErrorResponse error = new ProductErrorResponse();
 
-        error.setMessage(exc.getMessage());
+        error.setMessage(exc.getClass().getName() + ": " + exc.getMessage());
         error.setStatus(HttpStatus.NOT_FOUND.value());
         error.setTimeStamp(System.currentTimeMillis());
 
@@ -20,10 +21,10 @@ public class ProductExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ProductErrorResponse> invalidData(InvalidProductException exc) {
+    public ResponseEntity<ProductErrorResponse> invalidData(MethodArgumentNotValidException exc) {
         ProductErrorResponse error = new ProductErrorResponse();
 
-        error.setMessage(exc.getMessage());
+        error.setMessage(exc.getClass().getName() + ": Some of the fields is not valid for the request.");
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setTimeStamp(System.currentTimeMillis());
 
@@ -34,7 +35,7 @@ public class ProductExceptionHandler {
     public ResponseEntity<ProductErrorResponse> httpRequestBodyTypeMismatch(HttpMessageNotReadableException exc) {
         ProductErrorResponse error = new ProductErrorResponse();
 
-        error.setMessage("The type of some of the fields is invalid");
+        error.setMessage(exc.getClass().getName() + ": The type of some of the fields is invalid");
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setTimeStamp(System.currentTimeMillis());
 
