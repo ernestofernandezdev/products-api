@@ -91,15 +91,15 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private ProductRepository productRepository;
 &nbsp;
 &nbsp;    @Autowired
-&nbsp;    public ProductServiceImpl(ProductRepository productRepository) {
-&nbsp;        this.productRepository = productRepository;
-<b class="fc">&nbsp;    }</b>
-<b class="fc">&nbsp;</b>
+<b class="fc">&nbsp;    public ProductServiceImpl(ProductRepository productRepository) {</b>
+<b class="fc">&nbsp;        this.productRepository = productRepository;</b>
+&nbsp;    }
+&nbsp;
 &nbsp;    @Override
 &nbsp;    public List&lt;Product&gt; getProducts(String sort, String order) {
 &nbsp;
-&nbsp;        return switch (sort){
-&nbsp;            case &quot;price&quot; -&gt; order.equals(&quot;desc&quot;) ?
+<b class="fc">&nbsp;        return switch (sort){</b>
+<b class="fc">&nbsp;            case &quot;price&quot; -&gt; order.equals(&quot;desc&quot;) ?</b>
 <b class="fc">&nbsp;                    this.productRepository.findByOrderByPriceDesc() :</b>
 <b class="fc">&nbsp;                    this.productRepository.findByOrderByPriceAsc();</b>
 <b class="fc">&nbsp;            case &quot;name&quot; -&gt; order.equals(&quot;desc&quot;) ?</b>
@@ -109,53 +109,53 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;                    this.productRepository.findByOrderByAmountDesc() :</b>
 <b class="fc">&nbsp;                    this.productRepository.findByOrderByAmountAsc();</b>
 <b class="fc">&nbsp;            default -&gt; this.productRepository.findAll();</b>
-<b class="fc">&nbsp;        };</b>
-<b class="fc">&nbsp;</b>
+&nbsp;        };
+&nbsp;
 &nbsp;    }
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public Product getProductById(int id) {
-&nbsp;        Optional&lt;Product&gt; optProduct = this.productRepository.findById(id);
-&nbsp;        if (optProduct.isPresent()) {
+<b class="fc">&nbsp;        Optional&lt;Product&gt; optProduct = this.productRepository.findById(id);</b>
+<b class="fc">&nbsp;        if (optProduct.isPresent()) {</b>
 <b class="fc">&nbsp;            return optProduct.get();</b>
-<b class="fc">&nbsp;        } else {</b>
+&nbsp;        } else {
 <b class="fc">&nbsp;            throw new ProductNotFoundException(&quot;There is no product with id &quot; + id);</b>
 &nbsp;        }
-<b class="fc">&nbsp;    }</b>
+&nbsp;    }
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public Product createProduct(Product product) {
 &nbsp;
-&nbsp;        product.setId(0);
-&nbsp;        return this.productRepository.save(product);
-<b class="fc">&nbsp;</b>
-<b class="fc">&nbsp;    }</b>
+<b class="fc">&nbsp;        product.setId(0);</b>
+<b class="fc">&nbsp;        return this.productRepository.save(product);</b>
+&nbsp;
+&nbsp;    }
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public Product updateProduct(Product product, int id) {
 &nbsp;
-&nbsp;        if (this.productRepository.findById(id).isPresent()) {
-&nbsp;            product.setId(id);
+<b class="fc">&nbsp;        if (this.productRepository.findById(id).isPresent()) {</b>
+<b class="fc">&nbsp;            product.setId(id);</b>
 <b class="fc">&nbsp;            this.productRepository.save(product);</b>
-<b class="fc">&nbsp;</b>
+&nbsp;
 <b class="fc">&nbsp;            return product;</b>
 &nbsp;        } else {
 <b class="fc">&nbsp;            throw new ProductNotFoundException(&quot;There is no product with id &quot; + id);</b>
 &nbsp;        }
-<b class="fc">&nbsp;</b>
+&nbsp;
 &nbsp;    }
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public Product deleteProduct(int id) {
-&nbsp;        Optional&lt;Product&gt; optProduct = this.productRepository.findById(id);
+<b class="fc">&nbsp;        Optional&lt;Product&gt; optProduct = this.productRepository.findById(id);</b>
 &nbsp;
 <b class="fc">&nbsp;        if (optProduct.isPresent()) {</b>
-&nbsp;            this.productRepository.deleteById(id);
+<b class="fc">&nbsp;            this.productRepository.deleteById(id);</b>
 <b class="fc">&nbsp;            return optProduct.get();</b>
-<b class="fc">&nbsp;        } else {</b>
+&nbsp;        } else {
 <b class="fc">&nbsp;            throw new ProductNotFoundException(&quot;There is no product with id &quot; + id);</b>
 &nbsp;        }
-<b class="fc">&nbsp;    }</b>
+&nbsp;    }
 &nbsp;}
 </code>
 </pre>
@@ -180,7 +180,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-12-28 16:38</div>
+    <div style="float:right;">generated on 2024-01-01 04:48</div>
 </div>
 </body>
 </html>
