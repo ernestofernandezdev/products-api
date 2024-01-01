@@ -3,7 +3,6 @@ package com.ferdev.restful.api.dto;
 import com.ferdev.restful.api.entities.Product;
 import org.springframework.stereotype.Component;
 
-@Component
 public class Mapper {
     public static ProductDto toDto(Product product) {
         return ProductDto.builder()

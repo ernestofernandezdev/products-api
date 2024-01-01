@@ -1,12 +1,9 @@
 package com.ferdev.restful.api.services;
 
 import com.ferdev.restful.api.entities.Product;
-import com.ferdev.restful.api.exceptions.InvalidProductException;
 import com.ferdev.restful.api.exceptions.ProductNotFoundException;
 import com.ferdev.restful.api.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
