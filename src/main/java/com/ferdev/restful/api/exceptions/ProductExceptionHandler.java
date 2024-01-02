@@ -21,10 +21,21 @@ public class ProductExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<ProductErrorResponse> invalidQueryParam(InvalidQueryParamException exc) {
+        ProductErrorResponse error = new ProductErrorResponse();
+
+        error.setMessage(exc.getClass().getName() + ": " + exc.getMessage());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ProductErrorResponse> invalidData(MethodArgumentNotValidException exc) {
         ProductErrorResponse error = new ProductErrorResponse();
 
-        error.setMessage(exc.getClass().getName() + ": Some of the fields is not valid for the request.");
+        error.setMessage(exc.getClass().getName() + ": Some of the fields are not valid for the request.");
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setTimeStamp(System.currentTimeMillis());
 

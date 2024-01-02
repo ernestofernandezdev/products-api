@@ -1,6 +1,8 @@
 package com.ferdev.restful.api.services;
 
 import com.ferdev.restful.api.entities.Product;
+import com.ferdev.restful.api.enums.ProductFields;
+import com.ferdev.restful.api.exceptions.InvalidQueryParamException;
 import com.ferdev.restful.api.exceptions.ProductNotFoundException;
 import com.ferdev.restful.api.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +23,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getProducts(String sort, String order) {
 
-        return switch (sort){
-            case "price" -> order.equals("desc") ?
-                    this.productRepository.findByOrderByPriceDesc() :
-                    this.productRepository.findByOrderByPriceAsc();
-            case "name" -> order.equals("desc") ?
-                    this.productRepository.findByOrderByNameDesc() :
-                    this.productRepository.findByOrderByNameAsc();
-            case "amount" -> order.equals("desc") ?
-                    this.productRepository.findByOrderByAmountDesc() :
-                    this.productRepository.findByOrderByAmountAsc();
-            default -> this.productRepository.findAll();
-        };
+        if (ProductFields.validateSortValue(sort) && (order.equals("asc") || order.equals("desc"))) {
+            return this.productRepository.findAll(sort, order);
+        } else {
+            throw new InvalidQueryParamException("Some of the query params are not valid.");
+        }
 
     }
 

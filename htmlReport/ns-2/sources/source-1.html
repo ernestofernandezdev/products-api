@@ -100,8 +100,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;&quot;)
-&nbsp;    public ResponseEntity&lt;List&lt;ProductDto&gt;&gt; getProducts(@RequestParam(name = &quot;sort&quot;, defaultValue  = &quot;noSort&quot;) String sort,
-&nbsp;                                                        @RequestParam(name = &quot;order&quot;, defaultValue  = &quot;noOrder&quot;)String order) {
+&nbsp;    public ResponseEntity&lt;List&lt;ProductDto&gt;&gt; getProducts(@RequestParam(name = &quot;sort&quot;, defaultValue  = &quot;id&quot;) String sort,
+&nbsp;                                                        @RequestParam(name = &quot;order&quot;, defaultValue  = &quot;asc&quot;) String order) {
 &nbsp;
 <b class="fc">&nbsp;        List&lt;Product&gt; products = this.productService.getProducts(sort, order);</b>
 &nbsp;
@@ -163,7 +163,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-01-01 04:48</div>
+    <div style="float:right;">generated on 2024-01-02 04:02</div>
 </div>
 </body>
 </html>

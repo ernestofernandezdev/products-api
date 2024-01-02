@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > ProductRepository</title>
+  <title>Coverage Report > ProductRepositoryImpl</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,24 +22,61 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">com.ferdev.restful.api.repositories</a>
 </div>
 
-<h1>Coverage Summary for Class: ProductRepository (com.ferdev.restful.api.repositories)</h1>
+<h1>Coverage Summary for Class: ProductRepositoryImpl (com.ferdev.restful.api.repositories)</h1>
 
 <table class="coverageStats">
 
 <tr>
   <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductRepositoryImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
 </tr>
   <tr>
-    <td class="name">ProductRepository$MockitoMock$lhdFS73U</td>
-  </tr>
-  <tr>
-    <td class="name">ProductRepository$MockitoMock$lhdFS73U$auxiliary$01By6ZSi</td>
-  </tr>
-  <tr>
-    <td class="name">ProductRepository$MockitoMock$lhdFS73U$auxiliary$fabdG2B9</td>
+    <td class="name">ProductRepositoryImpl$$SpringCGLIB$$0</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
 </tr>
 </table>
 
@@ -51,19 +88,59 @@ Current scope:     <a href="../../index.html">all classes</a>
 <code class="sourceCode" id="sourceCode">&nbsp;package com.ferdev.restful.api.repositories;
 &nbsp;
 &nbsp;import com.ferdev.restful.api.entities.Product;
-&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import jakarta.persistence.EntityManager;
+&nbsp;import jakarta.persistence.TypedQuery;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
 &nbsp;import org.springframework.stereotype.Repository;
 &nbsp;
 &nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
 &nbsp;
 &nbsp;@Repository
-&nbsp;public interface ProductRepository extends JpaRepository&lt;Product, Integer&gt; {
-&nbsp;    List&lt;Product&gt; findByOrderByPriceAsc();
-&nbsp;    List&lt;Product&gt; findByOrderByPriceDesc();
-&nbsp;    List&lt;Product&gt; findByOrderByNameAsc();
-&nbsp;    List&lt;Product&gt; findByOrderByNameDesc();
-&nbsp;    List&lt;Product&gt; findByOrderByAmountAsc();
-&nbsp;    List&lt;Product&gt; findByOrderByAmountDesc();
+&nbsp;public class ProductRepositoryImpl implements ProductRepository {
+&nbsp;
+&nbsp;    EntityManager entityManager;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public ProductRepositoryImpl(EntityManager entityManager) {</b>
+<b class="fc">&nbsp;        this.entityManager = entityManager;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Product&gt; findAll(String sort, String order) {
+<b class="fc">&nbsp;        String strQuery = &quot;SELECT p FROM Product p ORDER BY p.&quot; + sort + &quot; &quot; + order;</b>
+&nbsp;
+<b class="fc">&nbsp;        TypedQuery&lt;Product&gt; query = this.entityManager.createQuery(strQuery, Product.class);</b>
+&nbsp;
+<b class="fc">&nbsp;        return query.getResultList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Optional&lt;Product&gt; findById(int id) {
+<b class="fc">&nbsp;        Product product = this.entityManager.find(Product.class, id);</b>
+&nbsp;
+<b class="fc">&nbsp;        if (product != null) {</b>
+<b class="fc">&nbsp;            return Optional.of(product);</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Transactional
+&nbsp;    public Product save(Product product) {
+<b class="fc">&nbsp;        return this.entityManager.merge(product);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Transactional
+&nbsp;    public void deleteById(int id) {
+<b class="fc">&nbsp;        Product product = this.entityManager.find(Product.class, id);</b>
+&nbsp;
+<b class="fc">&nbsp;        this.entityManager.remove(product);</b>
+&nbsp;    }
+&nbsp;
 &nbsp;}
 </code>
 </pre>
@@ -88,7 +165,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-01-01 04:48</div>
+    <div style="float:right;">generated on 2024-01-02 04:02</div>
 </div>
 </body>
 </html>

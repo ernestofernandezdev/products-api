@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > ProductErrorResponse</title>
+  <title>Coverage Report > ProductFields</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.ferdev.restful.api.exceptions</a>
+    <a href="../index.html">com.ferdev.restful.api.enums</a>
 </div>
 
-<h1>Coverage Summary for Class: ProductErrorResponse (com.ferdev.restful.api.exceptions)</h1>
+<h1>Coverage Summary for Class: ProductFields (com.ferdev.restful.api.enums)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -41,7 +41,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">ProductErrorResponse</td>
+  <td class="name">ProductFields</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    87,5%
+    80%
   </span>
   <span class="absValue">
-    (7/8)
+    (4/5)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    63,6%
+    92,3%
   </span>
   <span class="absValue">
-    (7/11)
+    (12/13)
   </span>
 </td>
 </tr>
@@ -75,45 +75,32 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.ferdev.restful.api.exceptions;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ferdev.restful.api.enums;
 &nbsp;
-&nbsp;public class ProductErrorResponse {
-&nbsp;    private int status;
-&nbsp;    private String message;
-&nbsp;    private Long timeStamp;
+&nbsp;import lombok.Getter;
 &nbsp;
-<b class="fc">&nbsp;    public ProductErrorResponse() {</b>
+<b class="fc">&nbsp;@Getter</b>
+&nbsp;public enum ProductFields {
+<b class="fc">&nbsp;    ID(&quot;id&quot;),</b>
+<b class="fc">&nbsp;    NAME(&quot;name&quot;),</b>
+<b class="fc">&nbsp;    DESCRIPTION(&quot;description&quot;),</b>
+<b class="fc">&nbsp;    PRICE(&quot;price&quot;),</b>
+<b class="fc">&nbsp;    AMOUNT(&quot;amount&quot;);</b>
 &nbsp;
+<b class="nc">&nbsp;    private final String label;</b>
+&nbsp;
+<b class="fc">&nbsp;    ProductFields(String label) {</b>
+<b class="fc">&nbsp;        this.label = label;</b>
 &nbsp;    }
 &nbsp;
-<b class="nc">&nbsp;    public ProductErrorResponse(int status, String message, Long timeStamp) {</b>
-<b class="nc">&nbsp;        this.status = status;</b>
-<b class="nc">&nbsp;        this.message = message;</b>
-<b class="nc">&nbsp;        this.timeStamp = timeStamp;</b>
-&nbsp;    }
+&nbsp;    public static boolean validateSortValue(String sort) {
+<b class="fc">&nbsp;        for (ProductFields p: values()) {</b>
+<b class="fc">&nbsp;            if (p.label.equals(sort)) {</b>
+<b class="fc">&nbsp;                return true;</b>
+&nbsp;            }
+&nbsp;        }
 &nbsp;
-&nbsp;    public int getStatus() {
-<b class="fc">&nbsp;        return status;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public void setStatus(int status) {
-<b class="fc">&nbsp;        this.status = status;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public String getMessage() {
-<b class="fc">&nbsp;        return message;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public void setMessage(String message) {
-<b class="fc">&nbsp;        this.message = message;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public Long getTimeStamp() {
-<b class="fc">&nbsp;        return timeStamp;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public void setTimeStamp(Long timeStamp) {
-<b class="fc">&nbsp;        this.timeStamp = timeStamp;</b>
+<b class="fc">&nbsp;        return false;</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -139,7 +126,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-01-01 04:48</div>
+    <div style="float:right;">generated on 2024-01-02 04:02</div>
 </div>
 </body>
 </html>

@@ -23,8 +23,8 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ProductDto>> getProducts(@RequestParam(name = "sort", defaultValue  = "noSort") String sort,
-                                                        @RequestParam(name = "order", defaultValue  = "noOrder")String order) {
+    public ResponseEntity<List<ProductDto>> getProducts(@RequestParam(name = "sort", defaultValue  = "id") String sort,
+                                                        @RequestParam(name = "order", defaultValue  = "asc") String order) {
 
         List<Product> products = this.productService.getProducts(sort, order);
 

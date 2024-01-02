@@ -1,17 +1,18 @@
 package com.ferdev.restful.api.repositories;
 
 import com.ferdev.restful.api.entities.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface ProductRepository extends JpaRepository<Product, Integer> {
-    List<Product> findByOrderByPriceAsc();
-    List<Product> findByOrderByPriceDesc();
-    List<Product> findByOrderByNameAsc();
-    List<Product> findByOrderByNameDesc();
-    List<Product> findByOrderByAmountAsc();
-    List<Product> findByOrderByAmountDesc();
+public interface ProductRepository {
+
+    List<Product> findAll(String sort, String order);
+
+    Optional<Product> findById(int id);
+
+    Product save(Product product);
+
+    void deleteById(int id);
+
 }

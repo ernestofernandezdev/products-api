@@ -1,8 +1,10 @@
+id,asc
+id,desc
+description,asc
+description,desc
 name,asc
 name,desc
 price,asc
 price,desc
 amount,asc
 amount,desc
-noSort,noOrder
-namee,noOrder

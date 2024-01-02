@@ -1,6 +1,7 @@
 package com.ferdev.restful.api;
 
 import com.ferdev.restful.api.entities.Product;
+import com.ferdev.restful.api.exceptions.InvalidQueryParamException;
 import com.ferdev.restful.api.exceptions.ProductNotFoundException;
 import com.ferdev.restful.api.repositories.ProductRepository;
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,6 +11,8 @@ import com.ferdev.restful.api.services.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -43,67 +46,19 @@ public class ProductServiceTest {
         );
     }
 
-    @Test
-    void getProductsOrderedByPriceAscendingTEST() {
-        when(productRepository.findByOrderByPriceAsc()).thenReturn(products);
+    @ParameterizedTest(name = "sort={0}, order={1}")
+    @CsvFileSource(resources = "/testFiles/sortAndOrder.csv")
+    void getAllProductsTEST(String sort, String order) {
+        when(this.productRepository.findAll(sort, order)).thenReturn(this.products);
 
-        assertEquals(products, productService.getProducts("price", "asc"));
-
-        verify(productRepository, times(1)).findByOrderByPriceAsc();
+        assertDoesNotThrow(() -> productService.getProducts(sort, order));
+        assertEquals(this.products, this.productService.getProducts(sort, order));
     }
 
-    @Test
-    void getProductsOrderedByPriceDescendingTEST() {
-        when(productRepository.findByOrderByPriceDesc()).thenReturn(products);
-
-        assertEquals(products, productService.getProducts("price", "desc"));
-
-        verify(productRepository, times(1)).findByOrderByPriceDesc();
-    }
-
-    @Test
-    void getProductsOrderedByNameAscendingTEST() {
-        when(productRepository.findByOrderByNameAsc()).thenReturn(products);
-
-        assertEquals(products, productService.getProducts("name", "asc"));
-
-        verify(productRepository, times(1)).findByOrderByNameAsc();
-    }
-
-    @Test
-    void getProductsOrderedByNameDescendingTEST() {
-        when(productRepository.findByOrderByNameDesc()).thenReturn(products);
-
-        assertEquals(products, productService.getProducts("name", "desc"));
-
-        verify(productRepository, times(1)).findByOrderByNameDesc();
-    }
-
-    @Test
-    void getProductsOrderedByAmountAscendingTEST() {
-        when(productRepository.findByOrderByAmountAsc()).thenReturn(products);
-
-        assertEquals(products, productService.getProducts("amount", "asc"));
-
-        verify(productRepository, times(1)).findByOrderByAmountAsc();
-    }
-
-    @Test
-    void getProductsOrderedByAmountDescendingTEST() {
-        when(productRepository.findByOrderByAmountDesc()).thenReturn(products);
-
-        assertEquals(products, productService.getProducts("amount", "desc"));
-
-        verify(productRepository, times(1)).findByOrderByAmountDesc();
-    }
-
-    @Test
-    void getProductsDefaultTEST() {
-        when(productRepository.findAll()).thenReturn(products);
-
-        assertEquals(products, productService.getProducts("noSort", "noOrder"));
-
-        verify(productRepository, times(1)).findAll();
+    @ParameterizedTest(name = "sort={0}, order={1}")
+    @CsvFileSource(resources = "/testFiles/badSortAndOrder.csv")
+    void getAllProductsWrongQueryParamsTEST(String sort, String order) {
+        assertThrows(InvalidQueryParamException.class, () -> productService.getProducts(sort, order));
     }
 
     @Test

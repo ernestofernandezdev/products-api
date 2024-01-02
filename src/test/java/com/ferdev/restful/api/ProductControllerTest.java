@@ -51,7 +51,7 @@ class ProductControllerTest {
 
 	@Test
 	void getProductsTEST() throws Exception {
-		when(productService.getProducts("noSort", "noOrder")).thenReturn(products);
+		when(productService.getProducts(Mockito.anyString(), Mockito.anyString())).thenReturn(products);
 
 		this.mockMvc.perform(get("/api/products"))
 				.andExpect(status().isOk())
@@ -67,15 +67,6 @@ class ProductControllerTest {
 					.param("sort", sort)
 					.param("order", order)
 				)
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasSize(4)));
-	}
-
-	@Test
-	void getProductsWithNullParamsTEST() throws Exception {
-		when(this.productService.getProducts("noSort", "noOrder")).thenReturn(this.products);
-
-		this.mockMvc.perform(get("/api/products?sort=&order="))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(4)));
 	}

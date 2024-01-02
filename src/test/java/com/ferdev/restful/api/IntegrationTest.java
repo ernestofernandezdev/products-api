@@ -9,6 +9,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,26 +46,17 @@ public class IntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
+    @ParameterizedTest(name = "sort={0}, order={1}")
+    @CsvFileSource(resources = "/testFiles/sortAndOrder.csv")
     @Order(1)
-    void getProductsTEST() throws Exception {
-        List<Product> products = this.productRepository.findAll();
-
-        mockMvc.perform(get("/api/products"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(products.size())));
-    }
-
-    @Test
-    @Order(1)
-    void getProductsOrderedByNameAscTEST() throws Exception {
-        List<ProductDto> products = this.productRepository.findByOrderByNameAsc().stream()
+    void getProductsTEST(String sort, String order) throws Exception {
+        List<ProductDto> products = this.productRepository.findAll(sort, order).stream()
                 .map(Mapper::toDto)
                 .toList();
 
         String productJson = mockMvc.perform(get("/api/products")
-                        .param("sort", "name")
-                        .param("order", "asc")
+                        .param("sort", sort)
+                        .param("order", order)
                 )
                 .andExpect(status().isOk())
                 .andReturn()
@@ -75,109 +68,17 @@ public class IntegrationTest {
         assertIterableEquals(products, productsResponse);
     }
 
-    @Test
+    @ParameterizedTest(name = "sort={0}, order={1}")
+    @CsvFileSource(resources = "/testFiles/badSortAndOrder.csv")
     @Order(1)
-    void getProductsOrderedByNameDescTEST() throws Exception {
-        List<ProductDto> products = this.productRepository.findByOrderByNameDesc().stream()
-                .map(Mapper::toDto)
-                .toList();
+    void getProductsWrongQueryParamsTEST(String sort, String order) throws Exception {
 
-        String productJson = mockMvc.perform(get("/api/products")
-                        .param("sort", "name")
-                        .param("order", "desc")
+        mockMvc.perform(get("/api/products")
+                        .param("sort", sort)
+                        .param("order", order)
                 )
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
-
-        List<ProductDto> productsResponse = Arrays.asList(objectMapper.readValue(productJson, ProductDto[].class));
-
-        assertIterableEquals(products, productsResponse);
-    }
-
-    @Test
-    @Order(1)
-    void getProductsOrderedByPriceAscTEST() throws Exception {
-        List<ProductDto> products = this.productRepository.findByOrderByPriceAsc().stream()
-                .map(Mapper::toDto)
-                .toList();
-
-        String productJson = mockMvc.perform(get("/api/products")
-                        .param("sort", "price")
-                        .param("order", "asc")
-                )
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
-
-        List<ProductDto> productsResponse = Arrays.asList(objectMapper.readValue(productJson, ProductDto[].class));
-
-        assertIterableEquals(products, productsResponse);
-    }
-
-    @Test
-    @Order(1)
-    void getProductsOrderedByPriceDescTEST() throws Exception {
-        List<ProductDto> products = this.productRepository.findByOrderByPriceDesc().stream()
-                .map(Mapper::toDto)
-                .toList();
-
-        String productJson = mockMvc.perform(get("/api/products")
-                        .param("sort", "price")
-                        .param("order", "desc")
-                )
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
-
-        List<ProductDto> productsResponse = Arrays.asList(objectMapper.readValue(productJson, ProductDto[].class));
-
-        assertIterableEquals(products, productsResponse);
-    }
-
-    @Test
-    @Order(1)
-    void getProductsOrderedByAmountAscTEST() throws Exception {
-        List<ProductDto> products = this.productRepository.findByOrderByAmountAsc().stream()
-                .map(Mapper::toDto)
-                .toList();
-
-        String productJson = mockMvc.perform(get("/api/products")
-                        .param("sort", "amount")
-                        .param("order", "asc")
-                )
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
-
-        List<ProductDto> productsResponse = Arrays.asList(objectMapper.readValue(productJson, ProductDto[].class));
-
-        assertIterableEquals(products, productsResponse);
-    }
-
-    @Test
-    @Order(1)
-    void getProductsOrderedByAmountDescTEST() throws Exception {
-        List<ProductDto> products = this.productRepository.findByOrderByAmountDesc().stream()
-                .map(Mapper::toDto)
-                .toList();
-
-        String productJson = mockMvc.perform(get("/api/products")
-                        .param("sort", "amount")
-                        .param("order", "desc")
-                )
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
-
-        List<ProductDto> productsResponse = Arrays.asList(objectMapper.readValue(productJson, ProductDto[].class));
-
-        assertIterableEquals(products, productsResponse);
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", containsString("InvalidQueryParamException")));
     }
 
     @Test
@@ -295,5 +196,4 @@ public class IntegrationTest {
                 .andExpect(status().isNotFound());
 
     }
-
 }
