@@ -30,43 +30,30 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductServiceImpl productService;
 
-    private Product product;
-
-    private List<Product> products;
-
-    @BeforeEach
-    void setData() {
-        product = new Product("Heladera", "", 100, 1);
-
-        products = Arrays.asList(
-                new Product("Heladera", "", 100, 1),
-                new Product("Telefono", "", 10, 1),
-                new Product("Mesa", "", 20, 1),
-                new Product("Silla", "", 3, 4)
-        );
-    }
-
     @ParameterizedTest(name = "sort={0}, order={1}")
     @CsvFileSource(resources = "/testFiles/sortAndOrder.csv")
     void getAllProductsTEST(String sort, String order) {
-        when(this.productRepository.findAll(sort, order)).thenReturn(this.products);
+        List<Product> products = MockData.mockProductList();
 
-        assertDoesNotThrow(() -> productService.getProducts(sort, order));
-        assertEquals(this.products, this.productService.getProducts(sort, order));
+        when(this.productRepository.findAll(sort, order, MockData.mockFilters())).thenReturn(products);
+
+        assertDoesNotThrow(() -> productService.getProducts(sort, order, MockData.mockFilters()));
+        assertEquals(products, this.productService.getProducts(sort, order, MockData.mockFilters()));
     }
 
     @ParameterizedTest(name = "sort={0}, order={1}")
     @CsvFileSource(resources = "/testFiles/badSortAndOrder.csv")
     void getAllProductsWrongQueryParamsTEST(String sort, String order) {
-        assertThrows(InvalidQueryParamException.class, () -> productService.getProducts(sort, order));
+        assertThrows(InvalidQueryParamException.class, () -> productService.getProducts(sort, order, MockData.mockFilters()));
     }
 
     @Test
     void getProductByIdTEST() {
-        when(productRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(this.product));
+        Product product = MockData.mockSingleProduct();
+        when(productRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(product));
 
         assertDoesNotThrow(() -> productService.getProductById(0));
-        assertEquals(this.product, productService.getProductById(0));
+        assertEquals(product, productService.getProductById(0));
 
         verify(productRepository, times(2)).findById(Mockito.anyInt());
     }
@@ -80,27 +67,30 @@ public class ProductServiceTest {
 
     @Test
     void createProductTEST() {
-        when(productRepository.save(Mockito.any(Product.class))).thenReturn(this.product);
+        Product product = MockData.mockSingleProduct();
 
-        assertEquals(this.product, this.productService.createProduct(product));
+        when(productRepository.save(Mockito.any(Product.class))).thenReturn(product);
+
+        assertEquals(product, this.productService.createProduct(product));
 
         verify(productRepository, times(1)).save(Mockito.any(Product.class));
     }
 
     @Test
     void updateProductTEST() {
+        Product product = MockData.mockSingleProduct();
         int id = 1;
 
-        when(this.productRepository.findById(id)).thenReturn(Optional.of(this.product));
+        when(this.productRepository.findById(id)).thenReturn(Optional.of(product));
         when(this.productRepository.save(Mockito.any(Product.class))).thenAnswer(invocation -> {
             return invocation.getArgument(0);
         });
 
-        assertDoesNotThrow(() -> this.productService.updateProduct(this.product, id));
+        assertDoesNotThrow(() -> this.productService.updateProduct(product, id));
 
-        Product returnedProduct = this.productService.updateProduct(this.product, id);
+        Product returnedProduct = this.productService.updateProduct(product, id);
         assertEquals(id, returnedProduct.getId(), "Id of the product should be " + id);
-        assertEquals(this.product, returnedProduct, "Object returned should be equal");
+        assertEquals(product, returnedProduct, "Object returned should be equal");
 
         verify(productRepository, times(2)).findById(Mockito.anyInt());
         verify(productRepository, times(2)).save(Mockito.any(Product.class));
@@ -112,7 +102,7 @@ public class ProductServiceTest {
 
         when(this.productRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
-        assertThrows(ProductNotFoundException.class, () -> this.productService.updateProduct(this.product, id));
+        assertThrows(ProductNotFoundException.class, () -> this.productService.updateProduct(MockData.mockSingleProduct(), id));
 
         verify(productRepository, times(1)).findById(Mockito.anyInt());
         verify(productRepository, times(0)).save(Mockito.any(Product.class));
@@ -120,12 +110,13 @@ public class ProductServiceTest {
 
     @Test
     void deleteProductTEST() {
+        Product product = MockData.mockSingleProduct();
         int id = 1;
 
-        when(this.productRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(this.product));
+        when(this.productRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(product));
 
         assertDoesNotThrow(() -> this.productService.deleteProduct(id));
-        assertEquals(this.product, this.productService.deleteProduct(id));
+        assertEquals(product, this.productService.deleteProduct(id));
 
         verify(this.productRepository, times(2)).findById(Mockito.anyInt());
         verify(this.productRepository, times(2)).deleteById(Mockito.anyInt());

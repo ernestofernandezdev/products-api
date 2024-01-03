@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ferdev.restful.api.dto.Mapper;
 import com.ferdev.restful.api.dto.ProductDto;
 import com.ferdev.restful.api.entities.Product;
+import com.ferdev.restful.api.enums.ProductFields;
 import com.ferdev.restful.api.repositories.ProductRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -19,9 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +49,7 @@ public class IntegrationTest {
     @CsvFileSource(resources = "/testFiles/sortAndOrder.csv")
     @Order(1)
     void getProductsTEST(String sort, String order) throws Exception {
-        List<ProductDto> products = this.productRepository.findAll(sort, order).stream()
+        List<ProductDto> products = this.productRepository.findAll(sort, order, MockData.mockFilters()).stream()
                 .map(Mapper::toDto)
                 .toList();
 
@@ -194,6 +193,36 @@ public class IntegrationTest {
 
         mockMvc.perform(delete("/api/products/{id}", id))
                 .andExpect(status().isNotFound());
+
+    }
+
+    @ParameterizedTest(name = "name={0}, price={1}, amount={2}")
+    @CsvFileSource(resources = "/testFiles/filters.csv")
+    @Order(7)
+    void getProductsFiltered(String name, String price, String amount) throws Exception {
+        HashMap<ProductFields, String> customFilters = new HashMap<>();
+        customFilters.put(ProductFields.NAME, name);
+        customFilters.put(ProductFields.PRICE, price);
+        customFilters.put(ProductFields.AMOUNT, amount);
+
+        List<ProductDto> products = this.productRepository
+                .findAll(ProductFields.ID.getLabel(), "asc", customFilters)
+                .stream()
+                .map(Mapper::toDto)
+                .toList();
+
+        String jsonProducts = mockMvc.perform(get("/api/products")
+                        .param(ProductFields.NAME.getLabel(), name)
+                        .param(ProductFields.PRICE.getLabel(), price)
+                        .param(ProductFields.AMOUNT.getLabel(), amount))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        List<ProductDto> queriedProducts = Arrays.asList(objectMapper.readValue(jsonProducts, ProductDto[].class));
+
+        assertIterableEquals(products, queriedProducts);
 
     }
 }

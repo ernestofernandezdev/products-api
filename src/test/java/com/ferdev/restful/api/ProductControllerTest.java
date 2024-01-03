@@ -2,8 +2,10 @@ package com.ferdev.restful.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ferdev.restful.api.controllers.ProductController;
+import com.ferdev.restful.api.enums.ProductFields;
 import com.ferdev.restful.api.services.ProductService;
 import com.ferdev.restful.api.entities.Product;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,9 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,31 +31,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProductController.class)
 class ProductControllerTest {
 
-	private List<Product> products;
-
-	private Product product;
-
 	@Autowired
 	private MockMvc mockMvc;
 
 	@MockBean
 	private ProductService productService;
 
-	@BeforeEach
-	void setData() {
-		this.product = new Product("Heladera", "frio", 100000, 1);
-
-		this.products = new ArrayList<>(Arrays.asList(
-				new Product("Heladera", "frio", 100000, 1),
-				new Product("Calefactor", "calor", 150000, 2),
-				new Product("Teléfono", "celular", 50000, 1),
-				new Product("Silla", "hogar", 4000, 4)
-		));
-	}
-
 	@Test
 	void getProductsTEST() throws Exception {
-		when(productService.getProducts(Mockito.anyString(), Mockito.anyString())).thenReturn(products);
+		when(productService.getProducts(
+				Mockito.anyString(),
+				Mockito.anyString(),
+				anyMap()
+		)).thenReturn(MockData.mockProductList());
 
 		this.mockMvc.perform(get("/api/products"))
 				.andExpect(status().isOk())
@@ -61,7 +53,11 @@ class ProductControllerTest {
 	@ParameterizedTest(name = "sort={0}, order={1}")
 	@CsvFileSource(resources = "/testFiles/sortAndOrder.csv")
 	void getProductsWithParamsTEST(String sort, String order) throws Exception {
-		when(productService.getProducts(Mockito.anyString(), Mockito.anyString())).thenReturn(this.products);
+		when(productService.getProducts(
+				Mockito.anyString(),
+				Mockito.anyString(),
+				anyMap()
+		)).thenReturn(MockData.mockProductList());
 
 		this.mockMvc.perform(get("/api/products")
 					.param("sort", sort)
@@ -73,11 +69,13 @@ class ProductControllerTest {
 
 	@Test
 	void getProductByIdTEST() throws Exception {
-		when(this.productService.getProductById(Mockito.anyInt())).thenReturn(this.product);
+		Product product = MockData.mockSingleProduct();
+
+		when(this.productService.getProductById(Mockito.anyInt())).thenReturn(product);
 
 		this.mockMvc.perform(get("/api/products/1"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.name", is(this.product.getName())));
+				.andExpect(jsonPath("$.name", is(product.getName())));
 	}
 
 	@ParameterizedTest(name = "name={0}, price={1}, amount={2}")
@@ -170,11 +168,12 @@ class ProductControllerTest {
 
 	@Test
 	void deleteProductTEST() throws Exception {
+		Product product = MockData.mockSingleProduct();
 
-		when(this.productService.deleteProduct(Mockito.anyInt())).thenReturn(this.product);
+		when(this.productService.deleteProduct(Mockito.anyInt())).thenReturn(product);
 
 		this.mockMvc.perform(delete("/api/products/1"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.name", is(this.product.getName())));
+				.andExpect(jsonPath("$.name", is(product.getName())));
 	}
 }

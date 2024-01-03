@@ -4,16 +4,18 @@ import lombok.Getter;
 
 @Getter
 public enum ProductFields {
-    ID("id"),
-    NAME("name"),
-    DESCRIPTION("description"),
-    PRICE("price"),
-    AMOUNT("amount");
+    ID("id", Integer.class),
+    NAME("name", String.class),
+    DESCRIPTION("description", String.class),
+    PRICE("price", Integer.class),
+    AMOUNT("amount", Integer.class);
 
     private final String label;
+    private final Class type;
 
-    ProductFields(String label) {
+    ProductFields(String label, Class type) {
         this.label = label;
+        this.type = type;
     }
 
     public static boolean validateSortValue(String sort) {

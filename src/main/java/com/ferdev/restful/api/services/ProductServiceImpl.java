@@ -8,7 +8,9 @@ import com.ferdev.restful.api.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,10 +23,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProducts(String sort, String order) {
+    public List<Product> getProducts(String sort, String order, Map<ProductFields, String> filters) {
 
         if (ProductFields.validateSortValue(sort) && (order.equals("asc") || order.equals("desc"))) {
-            return this.productRepository.findAll(sort, order);
+            return this.productRepository.findAll(sort, order, filters);
         } else {
             throw new InvalidQueryParamException("Some of the query params are not valid.");
         }
