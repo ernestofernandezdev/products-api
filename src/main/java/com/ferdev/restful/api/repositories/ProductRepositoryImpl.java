@@ -48,7 +48,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 
         TypedQuery<Product> query = this.entityManager.createQuery(strQuery.toString(), Product.class);
-
         for (ProductFields field: filters.keySet()) {
 
             if (filters.get(field) != null && !filters.get(field).isEmpty()) {
